@@ -10874,6 +10874,42 @@ namespace ManagementApi
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.4.4.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ActionDetectorConfig 
+    {
+        [Newtonsoft.Json.JsonProperty("fallConfidenceThreshold", Required = Newtonsoft.Json.Required.Always)]
+        public int FallConfidenceThreshold { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("bodyPartsMaxAgeMs", Required = Newtonsoft.Json.Required.Always)]
+        public int BodyPartsMaxAgeMs { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.4.4.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ActionDetectorConfigCreateRequest 
+    {
+        [Newtonsoft.Json.JsonProperty("fallConfidenceThreshold", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? FallConfidenceThreshold { get; set; } = 8000;
+    
+        [Newtonsoft.Json.JsonProperty("bodyPartsMaxAgeMs", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? BodyPartsMaxAgeMs { get; set; } = 3000;
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.4.4.0 (Newtonsoft.Json v12.0.0.0)")]
+    public partial class ActionDetectorConfigUpdateRequest 
+    {
+        [Newtonsoft.Json.JsonProperty("fallConfidenceThreshold", Required = Newtonsoft.Json.Required.Always)]
+        public int FallConfidenceThreshold { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("bodyPartsMaxAgeMs", Required = Newtonsoft.Json.Required.Always)]
+        public int BodyPartsMaxAgeMs { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.4.4.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class AddNewFaceRequest 
     {
         [Newtonsoft.Json.JsonProperty("imageData", Required = Newtonsoft.Json.Required.Always)]
@@ -10898,6 +10934,10 @@ namespace ManagementApi
         [Newtonsoft.Json.JsonProperty("spoofDetectorResourceIds", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
         public System.Collections.Generic.ICollection<string> SpoofDetectorResourceIds { get; set; } = new System.Collections.ObjectModel.Collection<string>();
+    
+        [Newtonsoft.Json.JsonProperty("actionDetectorResourceIds", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Collections.Generic.ICollection<string> ActionDetectorResourceIds { get; set; } = new System.Collections.ObjectModel.Collection<string>();
     
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -10986,6 +11026,10 @@ namespace ManagementApi
         [System.ComponentModel.DataAnnotations.Required]
         public PreviewAttributesConfig PreviewAttributesConfig { get; set; } = new PreviewAttributesConfig();
     
+        [Newtonsoft.Json.JsonProperty("actionDetectorConfig", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public ActionDetectorConfig ActionDetectorConfig { get; set; } = new ActionDetectorConfig();
+    
     
     }
     
@@ -11066,6 +11110,12 @@ namespace ManagementApi
     
         [Newtonsoft.Json.JsonProperty("previewAttributesConfig", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PreviewAttributesConfigCreateRequest PreviewAttributesConfig { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("actionDetectorResourceIds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> ActionDetectorResourceIds { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("actionDetectorConfig", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ActionDetectorConfigCreateRequest ActionDetectorConfig { get; set; }
     
     
     }
@@ -11154,6 +11204,12 @@ namespace ManagementApi
         [Newtonsoft.Json.JsonProperty("previewAttributesConfig", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PreviewAttributesConfigUpdateRequest PreviewAttributesConfig { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("actionDetectorResourceIds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> ActionDetectorResourceIds { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("actionDetectorConfig", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ActionDetectorConfigUpdateRequest ActionDetectorConfig { get; set; }
+    
     
     }
     
@@ -11173,7 +11229,6 @@ namespace ManagementApi
         public string CleanupStart { get; set; }
     
         [Newtonsoft.Json.JsonProperty("cleanupAmount", Required = Newtonsoft.Json.Required.AllowNull)]
-        [System.Obsolete]
         public int? CleanupAmount { get; set; }
     
         [Newtonsoft.Json.JsonProperty("deleteSql", Required = Newtonsoft.Json.Required.AllowNull)]
