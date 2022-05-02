@@ -34,10 +34,10 @@ jobs:
         shell: bash
         run: |
           # tag=$(git describe --tags --abbrev=0)
-          tag=${{ steps.version.outputs.version }}
-          release_name="sfcli-$tag-${{ matrix.target }}"
+          version=${{ steps.version.outputs.version-without-v }}
+          release_name="sfcli-${{ steps.version.outputs.version }}-${{ matrix.target }}"
           # Build everything
-          dotnet publish -c Release -o "$release_name" -p:Version=tag --self-contained true -p:PublishSingleFile=true --runtime "${{ matrix.target }}" ./SmartFace.Cli/SmartFace.Cli.csproj
+          dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "${{ matrix.target }}" ./SmartFace.Cli/SmartFace.Cli.csproj
           # Pack files
           if [ "${{ matrix.target }}" == "win-x64" ]; then
             # Pack to zip for Windows
