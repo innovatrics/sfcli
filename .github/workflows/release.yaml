@@ -1,0 +1,82 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Release
+    strategy:
+      matrix:
+        kind: ['linux', 'windows']
+        include:
+          - kind: linux
+            os: ubuntu-latest
+            target: linux-x64
+          - kind: windows
+            os: windows-latest
+            target: win-x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - id: version
+        uses: battila7/get-version-action@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '5.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        uses: battila7/get-version-action@v2
+        shell: bash
+        run: |
+          # tag=$(git describe --tags --abbrev=0)
+          tag=${{ steps.version.outputs.version }}
+          release_name="sfcli-$tag-${{ matrix.target }}"
+          # Build everything
+          dotnet publish -c Release -o "$release_name" -p:Version=tag --self-contained true -p:PublishSingleFile=true --runtime "${{ matrix.target }}" ./SmartFace.Cli/SmartFace.Cli.csproj
+          # Pack files
+          if [ "${{ matrix.target }}" == "win-x64" ]; then
+            # Pack to zip for Windows
+            7z a -tzip "${release_name}.zip" "./${release_name}/*"
+          else
+          tar czvf "${release_name}.tar.gz" "$release_name"
+          fi
+          # Delete output directory
+          rm -r "$release_name"
+      - name: Test with the dotnet CLI
+        run: dotnet test ./SmartFace.CliTests/SmartFace.CliTests.csproj
+      - name: release
+        uses: actions/create-release@v1
+        uses: battila7/get-version-action@v2
+        id: create_release
+        with:
+          draft: true
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body_path: README.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload linux artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: sfcli-${{ steps.version.outputs.version }}-${{ matrix.target }}.tar.gz
+          asset_name: sfcli-${{ steps.version.outputs.version }}-${{ matrix.target }}.tar.gz
+          asset_content_type: application/gzip
+      - name: upload windows artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: sfcli-${{ steps.version.outputs.version }}-${{ matrix.target }}.zip
+          asset_name: sfcli-${{ steps.version.outputs.version }}-${{ matrix.target }}.zip
+          asset_content_type: application/zip
