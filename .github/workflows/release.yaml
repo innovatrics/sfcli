@@ -31,7 +31,6 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - name: Build
-        uses: battila7/get-version-action@v2
         shell: bash
         run: |
           # tag=$(git describe --tags --abbrev=0)
