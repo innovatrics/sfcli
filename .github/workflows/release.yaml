@@ -28,19 +28,19 @@ jobs:
           version=${{ steps.version.outputs.version-without-v }}
           release_name="sfcli-${{ steps.version.outputs.version }}-linux-x64"
           # Build everything
-          dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "linux-x64" ./SmartFace.Cli/SmartFace.Cli.csproj
+          dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "linux-x64" -p:IncludeAllContentForSelfExtract=true -p:IncludeAllContentForSelfExtract=true ./SmartFace.Cli/SmartFace.Cli.csproj
           # Pack files
           tar czvf "${release_name}.tar.gz" "$release_name"
           # Delete output directory
           rm -r "$release_name"
-      - name: Build linux
+      - name: Build windows
         shell: bash
         run: |
           # tag=$(git describe --tags --abbrev=0)
           version=${{ steps.version.outputs.version-without-v }}
           release_name="sfcli-${{ steps.version.outputs.version }}-win-x64"
           # Build everything
-          dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "win-x64" ./SmartFace.Cli/SmartFace.Cli.csproj
+          dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "win-x64" -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true ./SmartFace.Cli/SmartFace.Cli.csproj
           # Pack files
           7z a -tzip "${release_name}.zip" "./${release_name}/*"
           # Delete output directory
@@ -55,7 +55,7 @@ jobs:
           prerelease: false
           release_name: ${{ steps.version.outputs.version }}
           tag_name: ${{ github.ref }}
-          body_path: README.md
+          body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: upload linux artifact
