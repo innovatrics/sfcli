@@ -15,8 +15,8 @@ jobs:
       - name: Set version variables
         id: version
         run: |
-          full_version=$(.github/parse_marketing_vesion.sh ${{ github.ref }} full_version)
-          semver=$(.github/parse_marketing_vesion.sh ${{ github.ref }} semver)
+          full_version=$(.github/workflows/parse_marketing_vesion.sh ${{ github.ref }} full_version)
+          semver=$(.github/workflows/parse_marketing_vesion.sh ${{ github.ref }} semver)
           echo ::set-output name=full_version::$full_version
           echo ::set-output name=semver::$semver
       - name: Setup dotnet
