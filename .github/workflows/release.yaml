@@ -1,0 +1,78 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - v4.**
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - id: version
+        uses: battila7/get-version-action@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '5.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build linux
+        shell: bash
+        run: |
+          # tag=$(git describe --tags --abbrev=0)
+          version=${{ steps.version.outputs.version-without-v }}
+          release_name="sfcli-${{ steps.version.outputs.version }}-linux-x64"
+          # Build everything
+          dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "linux-x64" -p:IncludeAllContentForSelfExtract=true -p:IncludeAllContentForSelfExtract=true ./SmartFace.Cli/SmartFace.Cli.csproj
+          # Pack files
+          tar czvf "${release_name}.tar.gz" "$release_name"
+          # Delete output directory
+          rm -r "$release_name"
+      - name: Build windows
+        shell: bash
+        run: |
+          # tag=$(git describe --tags --abbrev=0)
+          version=${{ steps.version.outputs.version-without-v }}
+          release_name="sfcli-${{ steps.version.outputs.version }}-win-x64"
+          # Build everything
+          dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "win-x64" -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true ./SmartFace.Cli/SmartFace.Cli.csproj
+          # Pack files
+          7z a -tzip "${release_name}.zip" "./${release_name}/*"
+          # Delete output directory
+          rm -r "$release_name"
+      - name: Test with the dotnet CLI
+        run: dotnet test ./SmartFace.CliTests/SmartFace.CliTests.csproj
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: true
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload linux artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: sfcli-${{ steps.version.outputs.version }}-linux-x64.tar.gz
+          asset_name: sfcli-${{ steps.version.outputs.version }}-linux-x64.tar.gz
+          asset_content_type: application/gzip
+      - name: upload windows artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: sfcli-${{ steps.version.outputs.version }}-win-x64.zip
+          asset_name: sfcli-${{ steps.version.outputs.version }}-win-x64.zip
+          asset_content_type: application/zip

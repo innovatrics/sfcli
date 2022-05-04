@@ -1,0 +1,27 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
+    paths-ignore:
+      - "*.md"
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '5.x'
+      # You can test your matrix by printing the current dotnet version
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet publish -c Release -o ./app -p:Platform=x64 ./SmartFace.Cli/SmartFace.Cli.csproj
+      - name: Test with the dotnet CLI
+        run: dotnet test ./SmartFace.CliTests/SmartFace.CliTests.csproj
