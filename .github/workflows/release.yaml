@@ -26,7 +26,7 @@ jobs:
         run: |
           # tag=$(git describe --tags --abbrev=0)
           version=${{ steps.version.outputs.version-without-v }}
-          release_name="sfcli-${{ steps.version.outputs.version }}-linux-x64"
+          release_name="sfcli-v5_${{ steps.version.outputs.version-without-v }}-linux-x64"
           # Build everything
           dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "linux-x64" -p:IncludeAllContentForSelfExtract=true -p:IncludeAllContentForSelfExtract=true ./SmartFace.Cli/SmartFace.Cli.csproj
           # Pack files
@@ -38,7 +38,7 @@ jobs:
         run: |
           # tag=$(git describe --tags --abbrev=0)
           version=${{ steps.version.outputs.version-without-v }}
-          release_name="sfcli-${{ steps.version.outputs.version }}-win-x64"
+          release_name="sfcli-v5_${{ steps.version.outputs.version-without-v }}-win-x64"
           # Build everything
           dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "win-x64" -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true ./SmartFace.Cli/SmartFace.Cli.csproj
           # Pack files
@@ -64,8 +64,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: sfcli-${{ steps.version.outputs.version }}-linux-x64.tar.gz
-          asset_name: sfcli-${{ steps.version.outputs.version }}-linux-x64.tar.gz
+          asset_path: sfcli-v5_${{ steps.version.outputs.version-without-v }}-linux-x64.tar.gz
+          asset_name: sfcli-v5_${{ steps.version.outputs.version-without-v }}-linux-x64.tar.gz
           asset_content_type: application/gzip
       - name: upload windows artifact
         uses: actions/upload-release-asset@v1
@@ -73,6 +73,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: sfcli-${{ steps.version.outputs.version }}-win-x64.zip
-          asset_name: sfcli-${{ steps.version.outputs.version }}-win-x64.zip
+          asset_path: sfcli-v5_${{ steps.version.outputs.version-without-v }}-win-x64.zip
+          asset_name: sfcli-v5_${{ steps.version.outputs.version-without-v }}-win-x64.zip
           asset_content_type: application/zip
