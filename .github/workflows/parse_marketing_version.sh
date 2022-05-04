@@ -9,8 +9,7 @@ VERSION=${1}
 # sufix
 FORMAT=${2}
 
-#regex="^((v\d+_)(\d+\.\d+\.\d))-?(.*)"
-if [[ $VERSION =~ ^((v[0-9]+_)([0-9]+\.[0-9]+\.[0-9]+))-?(.*$) ]]
+if [[ $VERSION =~ ((v[0-9]+_)([0-9]+\.[0-9]+\.[0-9]+))-?(.*$) ]]
 then
   case $FORMAT in
     full_version)
