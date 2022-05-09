@@ -37,6 +37,17 @@ jobs:
           tar czvf "${release_name}.tar.gz" "$release_name"
           # Delete output directory
           rm -r "$release_name"
+      - name: Build linux ARM64
+        shell: bash
+        run: |
+          version=${{ steps.version.outputs.semver }}
+          release_name="sfcli-${{ steps.version.outputs.full_version }}-linux-arm64"
+          # Build everything
+          dotnet publish -c Release -o "$release_name" -p:Version=$version --self-contained true -p:PublishSingleFile=true --runtime "linux-arm64" -p:IncludeAllContentForSelfExtract=true -p:IncludeAllContentForSelfExtract=true ./SmartFace.Cli/SmartFace.Cli.csproj
+          # Pack files
+          tar czvf "${release_name}.tar.gz" "$release_name"
+          # Delete output directory
+          rm -r "$release_name"
       - name: Build windows
         shell: bash
         run: |
@@ -69,6 +80,15 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: sfcli-${{ steps.version.outputs.full_version }}-linux-x64.tar.gz
           asset_name: sfcli-${{ steps.version.outputs.full_version }}-linux-x64.tar.gz
+          asset_content_type: application/gzip
+      - name: upload linux arm artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: sfcli-${{ steps.version.outputs.full_version }}-linux-arm64.tar.gz
+          asset_name: sfcli-${{ steps.version.outputs.full_version }}-linux-arm64.tar.gz
           asset_content_type: application/gzip
       - name: upload windows artifact
         uses: actions/upload-release-asset@v1
